@@ -51,9 +51,9 @@ def both_ends(s):
 # Hint: s.replace(stra, strb) returns a version of string s
 # where all instances of stra have been replaced by strb.
 def fix_start(s): 
-  # line = line[:10].replace(';', ':') + line[10:] -> something like this
-  
-  return
+	part_1 = s[0]
+	part_2 = s[1:]
+	return part_1 + part_2.replace(part_1, "*")
 
 
 # D. MixUp
