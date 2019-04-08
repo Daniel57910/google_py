@@ -55,7 +55,6 @@ def fix_start(s):
 	part_2 = s[1:]
 	return part_1 + part_2.replace(part_1, "*")
 
-
 # D. MixUp
 # Given strings a and b, return a single string with a and b separated
 # by a space '<a> <b>', except swap the first 2 chars of each string.
