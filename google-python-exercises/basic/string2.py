@@ -47,9 +47,25 @@ def not_bad(s):
 # Given 2 strings, a and b, return a string of the form
 #  a-front + b-front + a-back + b-back
 def front_back(a, b):
-  # +++your code here+++
-  return
+	if is_odd(a):
+		a_front = a[:(len(a) / 2) + 1]
+		a_back = a[(len(a) / 2) + 1:]
+	else:
+		a_front = a[:(len(a) / 2)]
+		a_back = a[(len(a) / 2):]
 
+	if is_odd(b):
+		b_front = b[:(len(b) / 2) + 1]
+		b_back = b[(len(b) / 2) + 1:]
+	else:
+		b_front = b[:(len(b) / 2)]
+		b_back = b[(len(b) / 2):]
+
+	return a_front + b_front + a_back + b_back
+
+
+def is_odd(chars):
+	return len(chars) % 2 != 0
 
 # Simple provided test() function used in main() to print
 # what each function returns vs. what it's supposed to return.
