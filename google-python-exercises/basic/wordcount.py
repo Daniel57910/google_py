@@ -16,9 +16,8 @@ def increase_counter(w_counter, line):
 def print_words(file):
 	word_counter = Counter()
 	for line in file:
-		line = line.split()
-		increase_counter(word_counter, line)
-
+		increase_counter(word_counter, line.split())
+		
 	file.close()
 	print word_counter.items()
 
