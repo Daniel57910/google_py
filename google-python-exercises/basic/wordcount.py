@@ -10,32 +10,39 @@ import sys
 from collections import Counter
 
 def increase_counter(w_counter, line):
-	for word in line:
-		w_counter[word.lower()] += 1
-		
-def print_words(file):
-	word_counter = Counter()
-	for line in file:
-		increase_counter(word_counter, line.split())
-		
-	file.close()
-	print word_counter.items()
+  for word in line:
+		word = ''.join(list(filter(lambda char: (char.isalnum()), word)))
+		if word != '' and word[0].isalpha(): 
+			w_counter[word.lower()] += 1
+	
+def print_pretty(words, count):
+	print 'hello'
+	for i in range(count):
+		print '%s: %s' %(words[i][0], words[i][1])
 
 def main():
+
   if len(sys.argv) != 3:
     print 'usage: ./wordcount.py {--count | --topcount} file'
     sys.exit(1)
 
   option = sys.argv[1]
   file_stream = open(sys.argv[2], 'rU')
+  word_counter = Counter()
+
+  for line in file_stream:
+  	increase_counter(word_counter, line.split())
+
+  file_stream.close()
 
   if option == '--count':
-    print_words(file_stream)
+	  print_pretty(sorted(word_counter.items()), len(word_counter))
   elif option == '--topcount':
-    print_top(filename)
+	  print_pretty(sorted(word_counter.items()), 20)
   else:
     print 'unknown option: ' + option
     sys.exit(1)
 
+
 if __name__ == '__main__':
-  main()
+	main()
