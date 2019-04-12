@@ -8,17 +8,15 @@
 
 import sys
 from collections import Counter
+import re
 
 def increase_counter(w_counter, line):
   for word in line:
-		word = ''.join(list(filter(lambda char: (char.isalnum()), word)))
-		if word != '' and word[0].isalpha(): 
-			w_counter[word.lower()] += 1
+		word = ''.join(re.findall(r'([a-z]|[0-9])', word))
+		if word != '' and word[0].isalpha(): w_counter[word.lower()] += 1
 	
 def print_pretty(words, count):
-	print 'hello'
-	for i in range(count):
-		print '%s: %s' %(words[i][0], words[i][1])
+	for i in range(count): print '%s: %s' %(words[i][0], words[i][1])
 
 def main():
 
