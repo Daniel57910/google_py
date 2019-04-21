@@ -20,9 +20,14 @@ import commands
 
 def get_special_paths(path):
 	files = os.listdir(path)
+	special_files = []
+	regex = r'(\w+)__(\w+)__.+([txt]|[jpg])'
 
 	for file in files:
-		print file
+		if re.match(regex, file):
+  			special_files.append(os.path.abspath(os.path.join(path, file)))
+
+	return special_files
 
 def main():
 	args = sys.argv[1:]
@@ -30,7 +35,8 @@ def main():
 		print "usage: [--todir dir][--tozip zipfile] dir [dir ...]";
 		sys.exit(1)
 
-	get_special_paths(args[0])
+	special_files = get_special_paths(args[0])
+	print special_files
 
 	# todir and tozip are either set from command line
 	# or left as the empty string.
