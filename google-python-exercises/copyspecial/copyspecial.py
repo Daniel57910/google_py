@@ -10,13 +10,6 @@ import sys
 import re
 import os
 import shutil
-import commands
-
-"""Copy Special exercise
-"""
-
-# +++your code here+++
-# Write functions and modify main() to call them
 
 def get_special_paths(path):
 
@@ -30,6 +23,21 @@ def get_special_paths(path):
 
 	return special_files
 
+def to_zip(file_name, files):
+	temp_dire = '/tmp/zipfiles'
+
+	#create temporary directory and copy special files to directory
+	to_directory(temp_dire, files)
+	
+	#zip the files using the file extension
+	shutil.make_archive(file_name, 'zip', temp_dire)
+	
+	#finally delete the temp directory 
+	try:
+		shutil.rmtree(temp_dire)
+	except OSerror as e:
+		raise e
+
 
 def make_directory(dire):
 
@@ -38,6 +46,7 @@ def make_directory(dire):
 	except OSError:
 		if not os.path.isdir(dire):
 			raise
+
 
 def to_directory(directory, files):
 		make_directory(directory)
@@ -55,7 +64,7 @@ def main():
 		to_directory(args[1], get_special_paths(args[2]))
 
 	if args[0] == '--tozip':
-		tozip = args[1]
+		to_zip(args[1], get_special_paths(args[2]))
 		del args[0:2]		
 	if len(args) == 0:
 		print "error: must specify one or more dirs"
