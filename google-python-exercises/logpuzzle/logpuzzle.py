@@ -11,51 +11,79 @@ import re
 import sys
 import urllib
 
-"""Logpuzzle exercise
-Given an apache logfile, find the puzzle urls and download the images.
-
-Here's what a puzzle url looks like:
-10.254.254.28 - - [06/Aug/2007:00:13:48 -0700] "GET /~foo/puzzle-bar-aaab.jpg HTTP/1.0" 302 528 "-" "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6"
-"""
-
-
 def read_urls(filename):
-  """Returns a list of the puzzle urls from the given log file,
-  extracting the hostname from the filename itself.
-  Screens out duplicate urls and returns the urls sorted into
-  increasing order."""
-  # +++your code here+++
-  
+
+	special_files = []
+	keyword = 'puzzle'
+	server_name = 'http://code.google.com'	
+	for file in filename:
+		url = file.partition('"GET ')[2].rpartition("HTTP")[0]
+		if (keyword in url): 
+			special_files.append(server_name + url)
+
+	#need to sort first as sort does not return list like js but mutates original
+	special_files = sorted(set(special_files))
+
+	for file in special_files: 
+		print file
+
+	return special_files
+
+
+def make_directory(dire):
+
+	try:
+		os.makedirs(dire)
+	except OSError:
+		if not os.path.isdir(dire):
+			raise
 
 def download_images(img_urls, dest_dir):
-  """Given the urls already in the correct order, downloads
-  each image into the given directory.
-  Gives the images local filenames img0, img1, and so on.
-  Creates an index.html in the directory
-  with an img tag to show each local image file.
-  Creates the directory if necessary.
-  """
-  # +++your code here+++
-  
+
+	img_name = dest_dir + '/img_'
+	img_list = []
+	count = 0
+	make_directory(dest_dir)
+
+	print('Retrieving URLs')
+	for img in img_urls:
+		if not os.path.exists(img_name + str(count)):
+			urllib.urlretrieve(img, img_name + str(count))
+		count+=1
+		img_list.append(img_name + str(count))
+
+	return img_list
+
+def create_html_file(img_list, html_file):
+	open_tag = '<img src=" '
+	close_tag = '">'
+	file = open(html_file, 'w+')
+	
+	for image in img_list:
+		image_for_file = open_tag + image + close_tag
+		file.write(image_for_file)
+	
+	file.close()
+
+
+
 
 def main():
-  args = sys.argv[1:]
 
-  if not args:
-    print 'usage: [--todir dir] logfile '
-    sys.exit(1)
+	args = sys.argv[1:]
+	dest_dir = os.getcwd() + '/' + 'images'
+	html_file = os.getcwd() + '/' + 'index.html'
 
-  todir = ''
-  if args[0] == '--todir':
-    todir = args[1]
-    del args[0:2]
+	if not args:
+		print('usage: [--todir dir] logfile ')
+		sys.exit(1)
 
-  img_urls = read_urls(args[0])
+	if args[0] == '--todir':
+		img_list = download_images(read_urls(open(args[1], 'rU')), dest_dir)
+		create_html_file(img_list, html_file)
+	else:
+		print("\n".join(read_urls(open(args[0], 'rU'))))
 
-  if todir:
-    download_images(img_urls, todir)
-  else:
-    print '\n'.join(img_urls)
 
 if __name__ == '__main__':
   main()
