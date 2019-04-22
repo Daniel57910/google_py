@@ -18,16 +18,11 @@ def read_urls(filename):
 	server_name = 'http://code.google.com'	
 	for file in filename:
 		url = file.partition('"GET ')[2].rpartition("HTTP")[0]
-		if (keyword in url): 
+		if (keyword in url) and (server_name + url) not in special_files: 
 			special_files.append(server_name + url)
 
-	#need to sort first as sort does not return list like js but mutates original
-	special_files = sorted(set(special_files))
+	return sorted(special_files)
 
-	for file in special_files: 
-		print file
-
-	return special_files
 
 
 def make_directory(dire):
