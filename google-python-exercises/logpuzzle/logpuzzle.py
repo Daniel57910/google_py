@@ -11,7 +11,7 @@ import re
 import sys
 import urllib
 
-def read_urls(filename):
+def read_urls(filename, file_type):
 
 	special_files = []
 	keyword = 'puzzle'
@@ -21,16 +21,31 @@ def read_urls(filename):
 		if (keyword in url) and (server_name + url) not in special_files: 
 			special_files.append(server_name + url)
 
-	return sorted(special_files)
+	if file_type == 'animal':
+		return sorted(special_files)
+	
+	if file_type == 'place':
+		debug_list = []
+		special_files = sorted(special_files,key=sort_by_middle_word)
+		debug_list = map(sort_by_middle_word, special_files)
+		print('\n'.join(special_files))
+		not_puzzle = filter(lambda url: 'puzzle' not in url, special_files)
+		if sorted(debug_list) == debug_list and len(set(debug_list)) == len(debug_list) and len(not_puzzle) == 0:
+			print('list is sorted and unique')
+		else:
+			print('list is not sorted')
+		return special_files
 
+def sort_by_middle_word(word):
+	return re.search(r'\p-(\w+)-(\w+)', word).group(2)
 
+def make_directory(directory):
 
-def make_directory(dire):
-
+	print('making directory')
 	try:
-		os.makedirs(dire)
+		os.makedirs(directory)
 	except OSError:
-		if not os.path.isdir(dire):
+		if not os.path.isdir(directory):
 			raise
 
 def download_images(img_urls, dest_dir):
@@ -42,8 +57,10 @@ def download_images(img_urls, dest_dir):
 
 	print('Retrieving URLs')
 	for img in img_urls:
+
 		if not os.path.exists(img_name + str(count)):
 			urllib.urlretrieve(img, img_name + str(count))
+			
 		count+=1
 		img_list.append(img_name + str(count))
 
@@ -67,15 +84,19 @@ def main():
 
 	args = sys.argv[1:]
 	dest_dir = os.getcwd() + '/' + 'images'
-	html_file = os.getcwd() + '/' + 'index.html'
+	animal_html_file = os.getcwd() + '/' + 'animal_index.html'
 
 	if not args:
 		print('usage: [--todir dir] logfile ')
 		sys.exit(1)
 
 	if args[0] == '--todir':
-		img_list = download_images(read_urls(open(args[1], 'rU')), dest_dir)
-		create_html_file(img_list, html_file)
+		if 'animal' in args[1]:
+			img_list = download_images(read_urls(open(args[2], 'rU'), 'animal'), args[1])
+			create_html_file(img_list, animal_html_file)
+		if 'place' in args[1]:
+			img_list = download_images(read_urls(open(args[2], 'rU'), 'place'), args[1])
+			create_html_file(img_list, animal_html_file)
 	else:
 		print("\n".join(read_urls(open(args[0], 'rU'))))
 
