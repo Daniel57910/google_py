@@ -22,7 +22,6 @@ def read_urls(filename, file_type):
 			special_files.append(server_name + url)
 
 	if file_type == 'animal': return sorted(special_files)
-	
 	if file_type == 'place': return sorted(special_files, key=sort_by_middle_word)
 
 def sort_by_middle_word(word):
