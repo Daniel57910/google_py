@@ -21,20 +21,9 @@ def read_urls(filename, file_type):
 		if (keyword in url) and (server_name + url) not in special_files: 
 			special_files.append(server_name + url)
 
-	if file_type == 'animal':
-		return sorted(special_files)
+	if file_type == 'animal': return sorted(special_files)
 	
-	if file_type == 'place':
-		debug_list = []
-		special_files = sorted(special_files,key=sort_by_middle_word)
-		debug_list = map(sort_by_middle_word, special_files)
-		print('\n'.join(special_files))
-		not_puzzle = filter(lambda url: 'puzzle' not in url, special_files)
-		if sorted(debug_list) == debug_list and len(set(debug_list)) == len(debug_list) and len(not_puzzle) == 0:
-			print('list is sorted and unique')
-		else:
-			print('list is not sorted')
-		return special_files
+	if file_type == 'place': return sorted(special_files, key=sort_by_middle_word)
 
 def sort_by_middle_word(word):
 	return re.search(r'\p-(\w+)-(\w+)', word).group(2)
@@ -85,18 +74,15 @@ def main():
 	args = sys.argv[1:]
 	dest_dir = os.getcwd() + '/' + 'images'
 	animal_html_file = os.getcwd() + '/' + 'animal_index.html'
+	place_html_file = os.getcwd() + '/' + 'place_index.html'
 
 	if not args:
 		print('usage: [--todir dir] logfile ')
 		sys.exit(1)
 
 	if args[0] == '--todir':
-		if 'animal' in args[1]:
-			img_list = download_images(read_urls(open(args[2], 'rU'), 'animal'), args[1])
-			create_html_file(img_list, animal_html_file)
-		if 'place' in args[1]:
-			img_list = download_images(read_urls(open(args[2], 'rU'), 'place'), args[1])
-			create_html_file(img_list, animal_html_file)
+		if 'animal' in args[1]:	create_html_file(download_images(read_urls(open(args[2], 'rU'), 'animal'), args[1]), animal_html_file)
+		if 'place' in args[1]:	create_html_file(download_images(read_urls(open(args[2], 'rU'), 'place'), args[1]), place_html_file)
 	else:
 		print("\n".join(read_urls(open(args[0], 'rU'))))
 
